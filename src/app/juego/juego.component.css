@@ -1,0 +1,56 @@
+* {
+    font-family: arial, sans-serif;
+}
+
+h2 {
+    text-align: center;
+}
+
+form {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    row-gap: 1rem;
+    position: relative;
+    margin-left: 2rem;
+}
+
+fieldset {
+    border: none;
+    width: 50rem;
+}
+
+label {
+    display: block;
+}
+
+input {
+    background-color: rgb(238, 238, 238);
+    border-bottom-color: rgb(58, 58, 58);
+    border-radius: .25rem .25rem 0 0;
+    box-shadow: rgb(58, 58, 58) 0px -2px 0px 0px inset;
+    color: rgb(58, 58, 58);
+    font-size: 1rem;
+    line-height: 1.5rem;
+    padding: .5rem 1rem;
+    width: 20rem;
+}
+
+.validacion {
+    color: red;
+    margin-left: 1rem;
+}
+
+button {
+    background-color: rgb(238, 238, 238);
+    border-radius: .25rem;
+    color: rgb(58, 58, 58);
+    font-size: 1rem;
+    line-height: 1.5rem;
+    padding: .5rem 1rem;
+    width: 20rem;
+}
+
+button:disabled {
+    cursor: not-allowed;
+}

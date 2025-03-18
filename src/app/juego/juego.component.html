@@ -1,0 +1,37 @@
+<h1>Juego de adivinación</h1>
+
+<section>
+
+  <h2>Rellena la configuración:</h2>
+  
+  <form>
+    <fieldset>
+      <label for="nombreJugador">Nombre:</label>
+      <input type="text" id="nombreJugador" name="nombreJugador" (keyup)="activarValidacionNombre()" (blur)="activarValidacionNombre()" [(ngModel)]="this.nombreJugador">
+      <span class="validacion" *ngIf="this.validacionNombreActiva && !this.validarNombre()">El nombre no puede estar vacío</span>
+    </fieldset>
+
+    <fieldset>
+      <label for="apellidoJugador">Apellido:</label>
+      <input type="text" id="apellidoJugador" name="apellidoJugador" (keyup)="activarValidacionApellido()" (blur)="activarValidacionApellido()" [(ngModel)]="this.apellidoJugador">
+      <span class="validacion" *ngIf="this.validacionApellidoActiva && !this.validarApellido()">El apellido no puede estar vacío</span>
+    </fieldset>
+
+    <fieldset>
+      <label for="rangoMaximo">Rango máximo (al menos 4):</label>
+      <input type="text" id="rangoMaximo" name="rangoMaximo" (keyup)="activarValidacionRango()" (blur)="activarValidacionRango()" [(ngModel)]="this.rangoMaximo">
+      <span class="validacion" *ngIf="this.validacionRangoActiva && this.validarRango() == 'inferior'">El número introducido es menor que el rango mínimo</span>
+      <span class="validacion" *ngIf="this.validacionRangoActiva && this.validarRango() == 'tipo'">El valor introducido no es un número</span>
+    </fieldset>
+
+    <fieldset>
+      <label for="numIntentos">Número de intentos:</label>
+      <input type="text" id="numIntentos" name="numIntentos" [(ngModel)]="this.numIntentos">
+    </fieldset>
+    
+    <button [attr.disabled]="this.validarBoton() ? null : true" (click)="recogerDatos()">Recoger Datos</button>
+  </form>
+
+
+
+</section>
