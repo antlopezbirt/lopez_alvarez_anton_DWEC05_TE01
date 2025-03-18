@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Configuracion } from '../modelos/Configuracion';
 
 @Component({
   selector: 'app-juego',
@@ -7,6 +8,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrl: './juego.component.css'
 })
 export class JuegoComponent implements OnInit {
+
+  public configuracion: Configuracion | null = null;
 
   public nombreJugador: string = "";
   public validacionNombreActiva: boolean = false;
@@ -23,6 +26,13 @@ export class JuegoComponent implements OnInit {
   public numIntentos: number = 0;
 
   public botonActivo: boolean = false;
+
+  public numeroAleatorio: number = 0;
+
+  public entradaIntento: number = 0;
+  public sumaIntentos: number = 0;
+
+  public resultado: string = "";
 
   constructor() {}
 
@@ -74,5 +84,19 @@ export class JuegoComponent implements OnInit {
 
   recogerDatos(): void {
     console.log('Datos recogidos');
+    this.configuracion = new Configuracion(
+      this.nombreJugador, this.apellidoJugador, this.rangoMaximo, this.numIntentos
+    )
+
+    this.numeroAleatorio = Math.floor(Math.random() * this.rangoMaximo);
+    console.log('Numero aleatorio: ', this.numeroAleatorio);
+  }
+
+  procesarIntento(): void {
+    if(this.entradaIntento > this.numeroAleatorio) this.resultado = "black";
+    else if(this.entradaIntento == (this.numeroAleatorio - 1)) this.resultado = "red";
+    else if(this.entradaIntento == (this.numeroAleatorio - 2)) this.resultado = "gold";
+    else if(this.entradaIntento < (this.numeroAleatorio - 2)) this.resultado = "blue";
+    else this.resultado = "green";
   }
 }

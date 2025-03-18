@@ -10,18 +10,24 @@ form {
     display: flex;
     align-items: center;
     flex-direction: column;
-    row-gap: 1rem;
+    row-gap: 2rem;
     position: relative;
     margin-left: 2rem;
 }
 
 fieldset {
+    text-align: center;
     border: none;
-    width: 50rem;
+    height: 5rem;
+}
+
+fieldset div {
+    text-align: start;
 }
 
 label {
     display: block;
+    text-align: start;
 }
 
 input {
@@ -36,9 +42,17 @@ input {
     width: 20rem;
 }
 
+.visible {
+    visibility: visible;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
 .validacion {
     color: red;
-    margin-left: 1rem;
+    margin-top: 1rem;
 }
 
 button {

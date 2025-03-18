@@ -1,37 +1,57 @@
 <h1>Juego de adivinación</h1>
 
 <section>
-
   <h2>Rellena la configuración:</h2>
   
   <form>
     <fieldset>
       <label for="nombreJugador">Nombre:</label>
       <input type="text" id="nombreJugador" name="nombreJugador" (keyup)="activarValidacionNombre()" (blur)="activarValidacionNombre()" [(ngModel)]="this.nombreJugador">
-      <span class="validacion" *ngIf="this.validacionNombreActiva && !this.validarNombre()">El nombre no puede estar vacío</span>
+      <span [attr.class]="this.validacionNombreActiva && this.validarNombre() ? 'visible' : 'invisible'"> ✅️</span>
+      
+      <div class="validacion" *ngIf="this.validacionNombreActiva && !this.validarNombre()">El nombre no puede estar vacío</div>
     </fieldset>
 
     <fieldset>
       <label for="apellidoJugador">Apellido:</label>
       <input type="text" id="apellidoJugador" name="apellidoJugador" (keyup)="activarValidacionApellido()" (blur)="activarValidacionApellido()" [(ngModel)]="this.apellidoJugador">
-      <span class="validacion" *ngIf="this.validacionApellidoActiva && !this.validarApellido()">El apellido no puede estar vacío</span>
+      <span [attr.class]="this.validacionApellidoActiva && this.validarApellido() ? 'visible' : 'invisible'"> ✅️</span>
+      <div class="validacion" *ngIf="this.validacionApellidoActiva && !this.validarApellido()">El apellido no puede estar vacío</div>
     </fieldset>
 
     <fieldset>
       <label for="rangoMaximo">Rango máximo (al menos 4):</label>
       <input type="text" id="rangoMaximo" name="rangoMaximo" (keyup)="activarValidacionRango()" (blur)="activarValidacionRango()" [(ngModel)]="this.rangoMaximo">
-      <span class="validacion" *ngIf="this.validacionRangoActiva && this.validarRango() == 'inferior'">El número introducido es menor que el rango mínimo</span>
-      <span class="validacion" *ngIf="this.validacionRangoActiva && this.validarRango() == 'tipo'">El valor introducido no es un número</span>
+      <span [attr.class]="this.validacionRangoActiva && this.validarRango() == 'valido' ? 'visible' : 'invisible'"> ✅️</span>
+      <div class="validacion" *ngIf="this.validacionRangoActiva && this.validarRango() == 'inferior'">El número introducido es menor que el rango mínimo</div>
+      <div class="validacion" *ngIf="this.validacionRangoActiva && this.validarRango() == 'tipo'">El valor introducido no es un número</div>
     </fieldset>
 
     <fieldset>
       <label for="numIntentos">Número de intentos:</label>
       <input type="text" id="numIntentos" name="numIntentos" [(ngModel)]="this.numIntentos">
+      <span class="invisible"> ✅️</span>
     </fieldset>
     
     <button [attr.disabled]="this.validarBoton() ? null : true" (click)="recogerDatos()">Recoger Datos</button>
   </form>
+</section>
 
+<section *ngIf="this.configuracion != null">
+  <h2>Ongi Etorri {{this.configuracion.nombreJugador}} {{this.configuracion.apellidoJugador}}</h2>
+  <form>
+    <input type="text" id="entradaIntento" name="entradaIntento" [(ngModel)]="this.entradaIntento">
+    <button (click)="procesarIntento()">Enviar</button>
 
+    <p [ngSwitch]="this.resultado">
+      <span [ngStyle]="{'color': this.resultado}" *ngSwitchCase="'black'">Te pasaste</span>
+      <span [ngStyle]="{'color': this.resultado}" *ngSwitchCase="'red'">Caliente</span>
+      <span [ngStyle]="{'color': this.resultado}" *ngSwitchCase="'gold'">Templado</span>
+      <span [ngStyle]="{'color': this.resultado}" *ngSwitchCase="'blue'">Frío</span>
+      <span [ngStyle]="{'color': this.resultado}" *ngSwitchCase="'green'">Has ganado</span>
+    </p>
+  </form>
 
+  
+  
 </section>
