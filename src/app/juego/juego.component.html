@@ -4,34 +4,43 @@
   <h1>Juego de adivinación</h1>
   
   <div class="form-config">
-    <fieldset [disabled]="this.configuracion != null">
-      <label for="nombreJugador">Nombre:</label>
-      <input type="text" id="nombreJugador" name="nombreJugador" (keyup)="activarValidacionNombre()" (blur)="activarValidacionNombre()" [(ngModel)]="this.nombreJugador">
-      <span [attr.class]="this.validacionNombreActiva && this.validarNombre() ? 'visible' : 'invisible'"> ✅️</span>
-      
-      <div class="validacion" *ngIf="this.validacionNombreActiva && !this.validarNombre()">El nombre no puede estar vacío</div>
-    </fieldset>
+    <div class="item-form">
+      <!-- Los campos de este formulario se deshabilitan cuando se crea el objeto de Configuracion. -->
+      <fieldset [disabled]="this.configuracion != null">
+        <label for="nombreJugador">Nombre:</label>
+        <!-- De inicio los mensajes de validación están ocultos. Pulsar una tecla dentro del input, o perder su foco, muestra las validaciones. -->
+        <input type="text" id="nombreJugador" name="nombreJugador" (keyup)="activarValidacionNombre()" (blur)="activarValidacionNombre()" [(ngModel)]="this.nombreJugador">
+        <span [attr.class]="this.validacionNombreActiva && this.validarNombre() ? 'visible' : 'invisible'"> ✅️</span>
+        <div class="validacion" *ngIf="this.validacionNombreActiva && !this.validarNombre()">El nombre no puede estar vacío</div>
+      </fieldset>
+    </div>
 
-    <fieldset [disabled]="this.configuracion != null">
-      <label for="apellidoJugador">Apellido:</label>
-      <input type="text" id="apellidoJugador" name="apellidoJugador" (keyup)="activarValidacionApellido()" (blur)="activarValidacionApellido()" [(ngModel)]="this.apellidoJugador">
-      <span [attr.class]="this.validacionApellidoActiva && this.validarApellido() ? 'visible' : 'invisible'"> ✅️</span>
-      <div class="validacion" *ngIf="this.validacionApellidoActiva && !this.validarApellido()">El apellido no puede estar vacío</div>
-    </fieldset>
+    <div class="item-form">
+      <fieldset [disabled]="this.configuracion != null">
+        <label for="apellidoJugador">Apellido:</label>
+        <input type="text" id="apellidoJugador" name="apellidoJugador" (keyup)="activarValidacionApellido()" (blur)="activarValidacionApellido()" [(ngModel)]="this.apellidoJugador">
+        <span [attr.class]="this.validacionApellidoActiva && this.validarApellido() ? 'visible' : 'invisible'"> ✅️</span>
+        <div class="validacion" *ngIf="this.validacionApellidoActiva && !this.validarApellido()">El apellido no puede estar vacío</div>
+      </fieldset>
+    </div>
 
-    <fieldset [disabled]="this.configuracion != null">
-      <label for="rangoMaximo">Rango máximo (al menos 4):</label>
-      <input type="text" id="rangoMaximo" name="rangoMaximo" (keyup)="activarValidacionRango()" (blur)="activarValidacionRango()" [(ngModel)]="this.rangoMaximo">
-      <span [attr.class]="this.validacionRangoActiva && this.validarRango() == 'valido' ? 'visible' : 'invisible'"> ✅️</span>
-      <div class="validacion" *ngIf="this.validacionRangoActiva && this.validarRango() == 'inferior'">El número introducido es menor que el rango mínimo</div>
-      <div class="validacion" *ngIf="this.validacionRangoActiva && this.validarRango() == 'tipo'">El valor introducido no es un número</div>
-    </fieldset>
+    <div class="item-form">
+      <fieldset [disabled]="this.configuracion != null">
+        <label for="rangoMaximo">Rango máximo (al menos 4):</label>
+        <input type="text" id="rangoMaximo" name="rangoMaximo" (keyup)="activarValidacionRango()" (blur)="activarValidacionRango()" [(ngModel)]="this.rangoMaximo">
+        <span [attr.class]="this.validacionRangoActiva && this.validarRango() == 'valido' ? 'visible' : 'invisible'"> ✅️</span>
+        <div class="validacion" *ngIf="this.validacionRangoActiva && this.validarRango() == 'inferior'">El número introducido es menor que el rango mínimo</div>
+        <div class="validacion" *ngIf="this.validacionRangoActiva && this.validarRango() == 'tipo'">El valor introducido no es un número</div>
+      </fieldset>
+    </div>
 
-    <fieldset [disabled]="this.configuracion != null">
-      <label for="numIntentos">Número de intentos:</label>
-      <input type="text" id="numIntentos" name="numIntentos" [(ngModel)]="this.numIntentos">
-      <span class="invisible"> ✅️</span>
-    </fieldset>
+    <div class="item-form">
+      <!-- No hay que validarlo, pero si se introduce un valor incompatible (un string, o menor que 1) no se podrá jugar. -->
+      <fieldset [disabled]="this.configuracion != null">
+        <label for="numIntentos">Número de intentos:</label>
+        <input type="text" id="numIntentos" name="numIntentos" [(ngModel)]="this.numIntentos"> &nbsp;&nbsp;&nbsp;&nbsp;
+      </fieldset>
+    </div>
   </div>
 
   <button [attr.disabled]="(this.validarBoton() && this.configuracion === null) ? null : true" (click)="recogerDatos()">Recoger Datos</button>
@@ -40,20 +49,21 @@
 
 <!-- SECCION DEL JUEGO -->
 
+<!-- Cuando se crea el objeto de Configuracion, se muestra la sección del juego. -->
 <section *ngIf="this.configuracion != null">
   <hr>
   <h2>Ongi Etorri {{this.configuracion.nombreJugador}} {{this.configuracion.apellidoJugador}}</h2>
 
   <div class="form-juego">
     <fieldset [disabled]="this.juegoTerminado === true">
-      <label for="entradaIntento">¿En qué número estoy pensando?</label>
+      <label for="entradaIntento">¿Qué número es?</label>
       <input type="text" id="entradaIntento" name="entradaIntento" [(ngModel)]="this.entradaIntento">
     </fieldset>
     
     <button [disabled]="this.juegoTerminado === true" (click)="procesarIntento()">Enviar</button>
   </div>
   
-
+  <!-- Por experimentar he probado con una estructura IF-ELSE y el SWITCH anidado -->
   <div *ngIf="this.sumaIntentos < this.configuracion.numIntentos; else finJuego">
     <p [ngSwitch]="this.resultado">
       <span [ngStyle]="{'color': this.resultado}" *ngSwitchCase="'orange'">El valor introducido no es un número</span>

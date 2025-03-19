@@ -34,12 +34,15 @@ export class JuegoComponent implements OnInit {
 
   public resultado: string = "";
   public juegoTerminado: boolean = false;
+  
 
   constructor() {}
 
   ngOnInit(): void {
     
   }
+
+  // -------------------------- VALIDACIONES ----------------------------------
 
   // Antes de que el usuario interactúe con los inputs, las validaciones están desactivadas
   activarValidacionNombre(): void {
@@ -84,17 +87,39 @@ export class JuegoComponent implements OnInit {
     return (this.nombreValido && this.apellidoValido && this.rangoValido);
   }
 
+  //------------------------ PROCESAMIENTO DE DATOS -------------------------
+
+  // Instancia un objeto Configuracion con los datos recogidos y ordena calcular el número aleatorio
   recogerDatos(): void {
-    console.log('Datos recogidos');
     this.configuracion = new Configuracion(
       this.nombreJugador, this.apellidoJugador, this.rangoMaximo, this.numIntentos
     )
+    console.log('Datos recogidos:');
+    console.log(this.configuracion);
 
-    this.numeroAleatorio = Math.floor(Math.random() * this.rangoMaximo);
-    console.log('Numero aleatorio: ', this.numeroAleatorio);
+    this.calcularAleatorio();
   }
 
-  // Se ha utilizado la técnica de devolver strings de nombres de colores HTML para aprovecharlos en la vista
+  // Calcula el n.º aleatorio
+  calcularAleatorio(): void {
+    if (this.configuracion != null) {
+      this.numeroAleatorio = Math.floor(Math.random() * this.configuracion.rangoMaximo);
+      console.log('Numero aleatorio: ', this.numeroAleatorio);
+    } else {
+      console.log('No se pudo calcular el número aleatorio. Aún no existe el objeto de Configuracion.')
+    }
+    
+  }
+
+
+  // -------------------- DINAMICA DEL JUEGO ------------------------------
+
+  /*
+    Aprovechando el formato de mensajes coloreados, se ha utilizado la técnica
+    de los vídeos de teoría: devolver strings con nombres de colores HTML para
+    aprovecharlos en la vista, tanto en los cases del switch como en el atributo
+    de estilo con [ngstyle].
+  */
   procesarIntento(): void {
     console.log('Intento: ', this.entradaIntento);
     // Si no es un número saca un mensaje de error anaranjado
@@ -107,7 +132,7 @@ export class JuegoComponent implements OnInit {
       } else {
         // Cuenta los intentos gastados
         this.sumaIntentos++;
-        if(this.configuracion != null && this.sumaIntentos == this.configuracion.numIntentos) this.juegoTerminado = true;
+        if(this.configuracion != null && this.sumaIntentos >= this.configuracion.numIntentos) this.juegoTerminado = true;
         if(this.entradaIntento > this.numeroAleatorio) this.resultado = "black";
         else if(this.entradaIntento == (this.numeroAleatorio - 1)) this.resultado = "red";
         else if(this.entradaIntento == (this.numeroAleatorio - 2)) this.resultado = "gold";
