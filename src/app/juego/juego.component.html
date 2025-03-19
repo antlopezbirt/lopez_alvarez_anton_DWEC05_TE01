@@ -1,10 +1,10 @@
-<h1>Juego de adivinación</h1>
+<!-- SECCION DE CONFIGURACION -->
 
 <section>
-  <h2>Rellena la configuración:</h2>
+  <h1>Juego de adivinación</h1>
   
-  <form>
-    <fieldset>
+  <div class="form-config">
+    <fieldset [disabled]="this.configuracion != null">
       <label for="nombreJugador">Nombre:</label>
       <input type="text" id="nombreJugador" name="nombreJugador" (keyup)="activarValidacionNombre()" (blur)="activarValidacionNombre()" [(ngModel)]="this.nombreJugador">
       <span [attr.class]="this.validacionNombreActiva && this.validarNombre() ? 'visible' : 'invisible'"> ✅️</span>
@@ -12,14 +12,14 @@
       <div class="validacion" *ngIf="this.validacionNombreActiva && !this.validarNombre()">El nombre no puede estar vacío</div>
     </fieldset>
 
-    <fieldset>
+    <fieldset [disabled]="this.configuracion != null">
       <label for="apellidoJugador">Apellido:</label>
       <input type="text" id="apellidoJugador" name="apellidoJugador" (keyup)="activarValidacionApellido()" (blur)="activarValidacionApellido()" [(ngModel)]="this.apellidoJugador">
       <span [attr.class]="this.validacionApellidoActiva && this.validarApellido() ? 'visible' : 'invisible'"> ✅️</span>
       <div class="validacion" *ngIf="this.validacionApellidoActiva && !this.validarApellido()">El apellido no puede estar vacío</div>
     </fieldset>
 
-    <fieldset>
+    <fieldset [disabled]="this.configuracion != null">
       <label for="rangoMaximo">Rango máximo (al menos 4):</label>
       <input type="text" id="rangoMaximo" name="rangoMaximo" (keyup)="activarValidacionRango()" (blur)="activarValidacionRango()" [(ngModel)]="this.rangoMaximo">
       <span [attr.class]="this.validacionRangoActiva && this.validarRango() == 'valido' ? 'visible' : 'invisible'"> ✅️</span>
@@ -27,31 +27,43 @@
       <div class="validacion" *ngIf="this.validacionRangoActiva && this.validarRango() == 'tipo'">El valor introducido no es un número</div>
     </fieldset>
 
-    <fieldset>
+    <fieldset [disabled]="this.configuracion != null">
       <label for="numIntentos">Número de intentos:</label>
       <input type="text" id="numIntentos" name="numIntentos" [(ngModel)]="this.numIntentos">
       <span class="invisible"> ✅️</span>
     </fieldset>
-    
-    <button [attr.disabled]="this.validarBoton() ? null : true" (click)="recogerDatos()">Recoger Datos</button>
-  </form>
+  </div>
+
+  <button [attr.disabled]="(this.validarBoton() && this.configuracion === null) ? null : true" (click)="recogerDatos()">Recoger Datos</button>
+
 </section>
 
-<section *ngIf="this.configuracion != null">
-  <h2>Ongi Etorri {{this.configuracion.nombreJugador}} {{this.configuracion.apellidoJugador}}</h2>
-  <form>
-    <input type="text" id="entradaIntento" name="entradaIntento" [(ngModel)]="this.entradaIntento">
-    <button (click)="procesarIntento()">Enviar</button>
+<!-- SECCION DEL JUEGO -->
 
+<section *ngIf="this.configuracion != null">
+  <hr>
+  <h2>Ongi Etorri {{this.configuracion.nombreJugador}} {{this.configuracion.apellidoJugador}}</h2>
+
+  <div class="form-juego">
+    <fieldset [disabled]="this.juegoTerminado === true">
+      <label for="entradaIntento">¿En qué número estoy pensando?</label>
+      <input type="text" id="entradaIntento" name="entradaIntento" [(ngModel)]="this.entradaIntento">
+    </fieldset>
+    
+    <button [disabled]="this.juegoTerminado === true" (click)="procesarIntento()">Enviar</button>
+  </div>
+  
+
+  <div *ngIf="this.sumaIntentos < this.configuracion.numIntentos; else finJuego">
     <p [ngSwitch]="this.resultado">
+      <span [ngStyle]="{'color': this.resultado}" *ngSwitchCase="'orange'">El valor introducido no es un número</span>
       <span [ngStyle]="{'color': this.resultado}" *ngSwitchCase="'black'">Te pasaste</span>
       <span [ngStyle]="{'color': this.resultado}" *ngSwitchCase="'red'">Caliente</span>
       <span [ngStyle]="{'color': this.resultado}" *ngSwitchCase="'gold'">Templado</span>
       <span [ngStyle]="{'color': this.resultado}" *ngSwitchCase="'blue'">Frío</span>
       <span [ngStyle]="{'color': this.resultado}" *ngSwitchCase="'green'">Has ganado</span>
     </p>
-  </form>
+  </div>
+  <ng-template #finJuego>¡Se terminó el juego! Te has quedado sin intentos.</ng-template>
 
-  
-  
 </section>

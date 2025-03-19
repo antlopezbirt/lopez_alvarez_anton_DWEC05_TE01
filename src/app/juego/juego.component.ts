@@ -19,20 +19,21 @@ export class JuegoComponent implements OnInit {
   public validacionApellidoActiva: boolean = false;
   public apellidoValido: boolean = false;
 
-  public rangoMaximo: number = 0;
+  public rangoMaximo: any = "";
   public validacionRangoActiva: boolean = false;
   public rangoValido: boolean = false;
 
-  public numIntentos: number = 0;
+  public numIntentos: any = "";
 
   public botonActivo: boolean = false;
 
   public numeroAleatorio: number = 0;
 
-  public entradaIntento: number = 0;
+  public entradaIntento: any = "";
   public sumaIntentos: number = 0;
 
   public resultado: string = "";
+  public juegoTerminado: boolean = false;
 
   constructor() {}
 
@@ -40,6 +41,7 @@ export class JuegoComponent implements OnInit {
     
   }
 
+  // Antes de que el usuario interactúe con los inputs, las validaciones están desactivadas
   activarValidacionNombre(): void {
     this.validacionNombreActiva = true;
   }
@@ -92,11 +94,26 @@ export class JuegoComponent implements OnInit {
     console.log('Numero aleatorio: ', this.numeroAleatorio);
   }
 
+  // Se ha utilizado la técnica de devolver strings de nombres de colores HTML para aprovecharlos en la vista
   procesarIntento(): void {
-    if(this.entradaIntento > this.numeroAleatorio) this.resultado = "black";
-    else if(this.entradaIntento == (this.numeroAleatorio - 1)) this.resultado = "red";
-    else if(this.entradaIntento == (this.numeroAleatorio - 2)) this.resultado = "gold";
-    else if(this.entradaIntento < (this.numeroAleatorio - 2)) this.resultado = "blue";
-    else this.resultado = "green";
+    console.log('Intento: ', this.entradaIntento);
+    // Si no es un número saca un mensaje de error anaranjado
+    if (isNaN(+this.entradaIntento) || this.entradaIntento == "") this.resultado = "orange";
+    else {
+      // Si acierta se termina el juego
+      if (this.entradaIntento == this.numeroAleatorio) {
+        this.resultado = "green";
+        this.juegoTerminado = true;
+      } else {
+        // Cuenta los intentos gastados
+        this.sumaIntentos++;
+        if(this.configuracion != null && this.sumaIntentos == this.configuracion.numIntentos) this.juegoTerminado = true;
+        if(this.entradaIntento > this.numeroAleatorio) this.resultado = "black";
+        else if(this.entradaIntento == (this.numeroAleatorio - 1)) this.resultado = "red";
+        else if(this.entradaIntento == (this.numeroAleatorio - 2)) this.resultado = "gold";
+        else if(this.entradaIntento < (this.numeroAleatorio - 2)) this.resultado = "blue";
+      }
+    }
   }
+
 }
