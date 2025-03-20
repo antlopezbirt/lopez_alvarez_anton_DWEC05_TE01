@@ -11,19 +11,20 @@ export class JuegoComponent implements OnInit {
 
   public configuracion: Configuracion | null = null;
 
-  public nombreJugador: string = "";
-  public validacionNombreActiva: boolean = false;
+  public nombre: string = "";
   public nombreValido: boolean = false;
+  public mensajeValidacionNombre: string = "";
 
-  public apellidoJugador: string = "";
-  public validacionApellidoActiva: boolean = false;
+  public apellido: string = "";
   public apellidoValido: boolean = false;
+  public mensajeValidacionApellido: string = "";
 
-  public rangoMaximo: any = "";
-  public validacionRangoActiva: boolean = false;
+  // Se declaran los atributos numéricos como any para evitar mostrar un cero inicial en el formulario
+  public rango: any = "";
   public rangoValido: boolean = false;
+  public mensajeValidacionRango: string = "";
 
-  public numIntentos: any = "";
+  public intentos: any = "";
 
   public botonActivo: boolean = false;
 
@@ -44,43 +45,59 @@ export class JuegoComponent implements OnInit {
 
   // -------------------------- VALIDACIONES ----------------------------------
 
-  // Antes de que el usuario interactúe con los inputs, las validaciones están desactivadas
-  activarValidacionNombre(): void {
-    this.validacionNombreActiva = true;
-  }
+  validarNombre(): void {
+    if(this.nombre == "") {
+      this.nombreValido = false;
+      this.mensajeValidacionNombre = "El nombre no puede estar vacío";
+    }
+    else {
+      this.nombreValido = true;
+      this.mensajeValidacionNombre = "";
+    }
 
-  validarNombre(): boolean {
-    this.nombreValido = this.nombreJugador == "" ? false : true;
+    // Chequea la validación del botón de recoger datos
     this.validarBoton();
-    return this.nombreValido;
   }
 
-  activarValidacionApellido(): void {
-    this.validacionApellidoActiva = true;
-  }
+  validarApellido(): void {
+    
+    if(this.apellido == "") {
+      this.apellidoValido = false;
+      this.mensajeValidacionApellido = "El apellido no puede estar vacío";
+    }
+    else {
+      this.apellidoValido = true;
+      this.mensajeValidacionApellido = "";
+    }
 
-  validarApellido(): boolean {
-    this.apellidoValido = this.apellidoJugador == "" ? false : true;
+    // Chequea la validación del botón de recoger datos
     this.validarBoton();
-    return this.apellidoValido;
   }
 
-  activarValidacionRango(): void {
-    this.validacionRangoActiva = true;
-  }
-
-  validarRango(): string {
-    this.rangoValido = false;
-    // Primero chequea si se ha introducio un numero
-    if (isNaN(+this.rangoMaximo)) return "tipo";
+  validarRango(): void {
+    // Primero chequea si se ha introducido algo
+    if (this.rango == "") {
+      this.rangoValido = false;
+      this.mensajeValidacionRango = "El rango no puede estar vacío"
+    }
+    // Ahora si lo que se ha introducido es un numero
+    else if (isNaN(+this.rango)) {
+      this.rangoValido = false;
+      this.mensajeValidacionRango = "El valor introducido no es un número";
+    }
     // Ahora chequea si cumple con el rango mínimo
-    else if (this.rangoMaximo < 4) return "inferior";
-    // Cumple con ambos requisitos
+    else if (this.rango < 4) {
+      this.rangoValido = false;
+      this.mensajeValidacionRango = "El número introducido es menor que el rango mínimo";
+    }
+    // Cumple con todos los requisitos
     else {
       this.rangoValido = true;
-      this.validarBoton();
-      return "valido";
+      this.mensajeValidacionRango = "";
     }
+
+    // Chequea la validación del botón de recoger datos
+    this.validarBoton();
   }
 
   validarBoton(): boolean {
@@ -92,7 +109,7 @@ export class JuegoComponent implements OnInit {
   // Instancia un objeto Configuracion con los datos recogidos y ordena calcular el número aleatorio
   recogerDatos(): void {
     this.configuracion = new Configuracion(
-      this.nombreJugador, this.apellidoJugador, this.rangoMaximo, this.numIntentos
+      this.nombre, this.apellido, this.rango, this.intentos
     )
     console.log('Datos recogidos:');
     console.log(this.configuracion);
@@ -103,25 +120,24 @@ export class JuegoComponent implements OnInit {
   // Calcula el n.º aleatorio
   calcularAleatorio(): void {
     if (this.configuracion != null) {
-      this.numeroAleatorio = Math.floor(Math.random() * this.configuracion.rangoMaximo);
+      this.numeroAleatorio = Math.floor(Math.random() * this.configuracion.rango);
       console.log('Numero aleatorio: ', this.numeroAleatorio);
     } else {
       console.log('No se pudo calcular el número aleatorio. Aún no existe el objeto de Configuracion.')
     }
-    
   }
 
 
   // -------------------- DINAMICA DEL JUEGO ------------------------------
 
   /*
-    Aprovechando el formato de mensajes coloreados, se ha utilizado la técnica
+    Aprovechando el requisito de respuestas coloreadas, se ha utilizado la idea
     de los vídeos de teoría: devolver strings con nombres de colores HTML para
     aprovecharlos en la vista, tanto en los cases del switch como en el atributo
     de estilo con [ngstyle].
   */
   procesarIntento(): void {
-    console.log('Intento: ', this.entradaIntento);
+    console.log('Intento recibido: ', this.entradaIntento);
     // Si no es un número saca un mensaje de error anaranjado
     if (isNaN(+this.entradaIntento) || this.entradaIntento == "") this.resultado = "orange";
     else {
@@ -132,7 +148,8 @@ export class JuegoComponent implements OnInit {
       } else {
         // Cuenta los intentos gastados
         this.sumaIntentos++;
-        if(this.configuracion != null && this.sumaIntentos >= this.configuracion.numIntentos) this.juegoTerminado = true;
+        console.log('Intentos realizados: ', this.sumaIntentos);
+        if(this.configuracion != null && this.sumaIntentos >= this.configuracion.intentos) this.juegoTerminado = true;
         if(this.entradaIntento > this.numeroAleatorio) this.resultado = "black";
         else if(this.entradaIntento == (this.numeroAleatorio - 1)) this.resultado = "red";
         else if(this.entradaIntento == (this.numeroAleatorio - 2)) this.resultado = "gold";
